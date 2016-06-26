@@ -1013,6 +1013,11 @@ class TRES(Instrument):
         super().__init__(name=name, FWHM=FWHM, wl_range=wl_range)
         #sets the FWHM and wl_range
 
+class ARCES(Instrument):
+    '''ARCES instrument'''
+    def __init__(self, name="ARCES", FWHM=3.0, wl_range=(3200, 10000)):
+        super().__init__(name=name, FWHM=FWHM, wl_range=wl_range)
+
 class Reticon(Instrument):
     '''Reticon Instrument'''
     def __init__(self, name="Reticon", FWHM=8.5, wl_range=(5145,5250)):
