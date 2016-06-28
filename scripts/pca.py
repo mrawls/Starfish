@@ -15,6 +15,7 @@ parser.add_argument("--samples", type=int, default=100, help="Number of samples 
 parser.add_argument("--params", choices=["fmin", "emcee"], help="Which optimized parameters to use.")
 
 parser.add_argument("--store", action="store_true", help="Store the optimized emulator parameters to the HDF5 file. Use with the --params=fmin or --params=emcee to choose.")
+parser.add_argument("--threads", choices=["half"], help="Option to only use half of your machine's CPUs (ie, to prevent overheating). Set with --threads=half, otherwise all CPUs will be used. Works well with the command-line cputhrottle utility.")
 args = parser.parse_args()
 
 import matplotlib.pyplot as plt
@@ -214,7 +215,10 @@ if args.optimize == "emcee":
         p0 = np.array(p0).T
 
 
-    sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob, threads=mp.cpu_count())
+    if args.threads == "half":
+        sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob, threads=int(0.5*mp.cpu_count()))
+    else:
+        sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob, threads=mp.cpu_count())
 
     # burn in
     pos, prob, state = sampler.run_mcmc(p0, args.samples)
